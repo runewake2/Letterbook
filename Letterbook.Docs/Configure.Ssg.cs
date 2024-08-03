@@ -16,16 +16,16 @@ public class ConfigureSsg : IHostingStartup
         .ConfigureServices((context,services) =>
         {
             context.Configuration.GetSection(nameof(AppConfig)).Bind(AppConfig.Instance);
-            // Assembly.GetAssembly(GetType()).
             services.AddSingleton(AppConfig.Instance);
             services.AddSingleton<RazorPagesEngine>();
-            services.AddSingleton<MarkdownChrono>();
             services.AddSingleton<MarkdownIncludes>();
             services.AddSingleton<MarkdownPages>();
             services.AddSingleton<MarkdownVideos>();
             services.AddSingleton<MarkdownMeta>();
-            services.AddMarkdown<MarkdownChrono>("_blog");
-            services.AddMarkdown<MarkdownChrono>("_updates");
+
+            services.AddMarkdown<Markdown.MarkdownChrono>()
+				.AddProjectFiles()
+	            .AddMarkdig();
         })
         .ConfigureAppHost(
             appHost => appHost.Plugins.Add(new CleanUrlsFeature()),
