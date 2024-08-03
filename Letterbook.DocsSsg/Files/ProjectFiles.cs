@@ -33,6 +33,7 @@ public class ProjectFiles(IWebHostEnvironment environment) : IProjectFiles
 		path.SelectMany(GetFiles);
 
 	public IFileInfo GetMarkdownDoc(MarkdownDoc doc) => _root.GetFileInfo(Relative(doc.Path));
+	public string? GetPath(IFileInfo file) => file.PhysicalPath != null ? Relative(file.PhysicalPath) : default;
 
 	public void ClearDist()
 	{
@@ -41,14 +42,15 @@ public class ProjectFiles(IWebHostEnvironment environment) : IProjectFiles
 		Directory.Delete(dest);
 	}
 
-	public Task WriteToDist(string path, Stream stream)
+	public void WriteToDist(string path, TextWriter writer)
 	{
 		var dest = Path.Join(_root.GetFileInfo("dist").PhysicalPath, path);
 		if (Path.GetDirectoryName(dest) is not { } dir)
 			throw new ProjectFilesException($"Cannot create {path}");
 		Directory.CreateDirectory(dir);
 		using var fs = new FileStream(dest, FileMode.Create, FileAccess.Write, FileShare.None);
-		return stream.CopyToAsync(fs);
+		using var streamWriter = new StreamWriter(fs);
+		streamWriter.Write(writer);
 	}
 
 	private string Relative(string physicalPath) => Path.GetRelativePath(_rootPath, physicalPath);

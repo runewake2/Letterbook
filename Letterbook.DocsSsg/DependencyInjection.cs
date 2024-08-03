@@ -1,11 +1,23 @@
+using System.Reflection;
 using Letterbook.DocsSsg.Files;
 using Letterbook.DocsSsg.Markdown;
 using Markdig;
+using RazorLight;
 
 namespace Letterbook.DocsSsg;
 
 public static class DependencyInjection
 {
+	public static RazorLightEngineBuilder AddStaticSite(this IServiceCollection services, string root)
+	{
+		var builder = new RazorLightEngineBuilder();
+		builder.UseFileSystemProject(root)
+			.UseMemoryCachingProvider();
+		services.AddSingleton<IRazorLightEngine, RazorLightEngine>(_ => builder.Build());
+
+		return builder;
+	}
+
 	public static IServiceCollection AddMarkdown<T>(this IServiceCollection services, string key) where T : class, IMarkdownFiles
 	{
 		return services

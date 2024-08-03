@@ -1,4 +1,7 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Letterbook.DocsSsg.Markdown;
+using Letterbook.DocsSsg.StaticSite;
 
 namespace Letterbook.DocsSsg;
 
@@ -10,9 +13,13 @@ public class Program
 
 		// Add services to the container.
 		builder.Services.AddRazorPages();
+		builder.Services.AddStaticSite(ProjectRoot());
 		builder.Services.AddMarkdig();
 		builder.Services.AddProjectFiles();
 		builder.Services.AddMarkdown<MarkdownChrono>("_blog");
+		builder.Services.AddSingleton<Generator>();
+
+		builder.Services.AddSingleton<Pages.Blog.Index>();
 
 		var app = builder.Build();
 
@@ -33,6 +40,12 @@ public class Program
 
 		app.MapRazorPages();
 
+		var generator = app.Services.GetRequiredService<Generator>();
+		generator.GenerateStaticSite().Wait();
+
 		app.Run();
 	}
+
+	private static string ProjectRoot([CallerFilePath] string path = "") =>
+		Path.GetPathRoot(path) ?? throw new InvalidOperationException();
 }

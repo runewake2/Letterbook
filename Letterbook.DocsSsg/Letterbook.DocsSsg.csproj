@@ -4,11 +4,18 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Markdig" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+      <PackageReference Include="RazorLight" />
       <PackageReference Include="YamlDotNet" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Views\" />
     </ItemGroup>
 
 </Project>

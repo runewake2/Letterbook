@@ -31,6 +31,13 @@ public interface IProjectFiles
 	/// <param name="doc"></param>
 	/// <returns></returns>
 	public IFileInfo GetMarkdownDoc(MarkdownDoc doc);
+
+	/// <summary>
+	/// Get the relative project path for the file
+	/// </summary>
+	/// <param name="file"></param>
+	/// <returns></returns>
+	public string? GetPath(IFileInfo file);
 	public void ClearDist();
-	public Task WriteToDist(string path, Stream stream);
+	public void WriteToDist(string path, TextWriter writer);
 }
